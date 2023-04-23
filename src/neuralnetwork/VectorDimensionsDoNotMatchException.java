@@ -8,4 +8,4 @@ package neuralnetwork;
  *
  * @author shale
  */
-public class VectorDimensionsDoNotMatchException extends Exception{}
+public class VectorDimensionsDoNotMatchException extends RuntimeException{}
