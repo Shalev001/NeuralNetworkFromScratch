@@ -24,8 +24,8 @@ public class Layer {
     
     public Layer(int size){
         this.size = size;
-        weights = new Vector[size];
         perceptrons = new Perceptron[size];
+        perceptronValues = new double[size];
         nextLayer = null;
         previosLayer = null;
         for (int i = 0; i < size; i++) {
@@ -40,8 +40,7 @@ public class Layer {
      */
     public static void link(Layer previosLayer, Layer nextLayer){
         previosLayer.setNextLayer(nextLayer);
-        nextLayer.setPreviosLayer(previosLayer);
-        
+        nextLayer.setPreviosLayer(previosLayer);  
     }
 
     public Layer getPreviosLayer() {
@@ -96,8 +95,13 @@ public class Layer {
         this.weights = weights;
     }
     
-    public void setWeight(int index, Vector weight) {
-        weights[index] = weight;
+    /**
+     * a method to set the weights for one of the perceptrons in the next layer
+     * @param index the index of the perceptron in the next layer to set the weights for
+     * @param weights the new set of weights
+     */
+    public void setWeights(int index, Vector weights){
+        this.weights[index] = weights;
     }
     
     /**
@@ -105,22 +109,15 @@ public class Layer {
      */
     public void initialiseWeights() throws NextLayerDoesNotExistException{
         
+        weights = new Vector[nextLayer.getSize()];
+        
         if (nextLayer == null){
             throw new NextLayerDoesNotExistException();
         }
         
-        for (int i = 0; i < size; i++) {
-            weights[i] = new Vector(new double[nextLayer.getSize()]);
+        for (int i = 0; i < nextLayer.getSize(); i++) {
+            weights[i] = new Vector(new double[size]);
         }
-    }
-    
-    /**
-     * a method to set the weights for one of the perceptrons in the next layer
-     * @param index the index of the perceptron in the next layer to set the weights for
-     * @param weights the new set of weights
-     */
-    public void setweights(int index, Vector weights){
-        this.weights[index] = weights;
     }
     
     /**

@@ -10,8 +10,8 @@ package neuralnetwork;
  */
 public class Perceptron {
     
-    double bias;
-    double value;
+    private double bias;
+    private double value;
     
     public Perceptron(double value, double bias){
         this.bias = bias;

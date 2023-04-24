@@ -126,6 +126,14 @@ public class Vector {
         
     }
     
-    
+    public String toString(){
+        String str = "";
+        
+        for (double num : contents){
+            str += num + "\n";
+        }
+        
+        return str;
+    }
     
 }
