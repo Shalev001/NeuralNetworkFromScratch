@@ -61,6 +61,30 @@ public class Vector {
 
         return result;
     }
+    
+    public static double magnitude(Vector vector){
+
+        double squaresum = 0;
+        
+        for(double num : vector.getContents()){
+            squaresum += num*num;
+        }
+        
+        return Math.sqrt(squaresum);
+        
+    }
+    
+    public double magnitude(){
+
+        double squaresum = 0;
+        
+        for(double num : contents){
+            squaresum += num*num;
+        }
+        
+        return Math.sqrt(squaresum);
+        
+    }
 
     public void add(Vector vector){
         
