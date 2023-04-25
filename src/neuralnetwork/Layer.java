@@ -140,4 +140,10 @@ public class Layer {
             nextLayer.getPerceptron(i).setValue(val);
         }
     }
+    
+    public void dumpvals(){
+        for(Perceptron perc : perceptrons){
+            System.out.println(perc.getValue());
+        }
+    }
 }

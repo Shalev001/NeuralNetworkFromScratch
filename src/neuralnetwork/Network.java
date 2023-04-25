@@ -26,6 +26,22 @@ public class Network {
         }
     }
 
+    public Layer getLayer(int index){
+        return Layers[index];
+    }
+    
+    public void compute(){
+        try{
+        for(Layer layer : Layers){
+            layer.calcNextLayer();
+        }
+        }catch(NextLayerDoesNotExistException e){}
+    }
+    
+    public void dumpOutput(){
+        Layers[Layers.length-1].dumpvals();
+    }
+    
     public void generateRandomWeights() {
 
         int size;
@@ -62,18 +78,18 @@ public class Network {
         //file formatt:
         writer.println(Layers.length + " number of layers");//number of layers
         for (Layer layer : Layers) {
-            writer.println(layer.getSize() + " size of each layer");// the size of each layer
+            writer.println(layer.getSize() + " size");// the size of each layer
         }
         for (Layer layer : Layers) {
             for (Perceptron perceptron : layer.getPerceptrons()) {
-                writer.println(perceptron.getBias() + " every bias for every perceptron in the network");//every bias for every perceptron in the network
+                writer.println(perceptron.getBias() + " bias");//every bias for every perceptron in the network
             }
         }
         try {//the last layer will give a nullpointerexception since its weights are not inisialized
             for (Layer layer : Layers) {
                 for (int i = 0; i < layer.getWeights().length; i++) {
                     for (double weight : layer.getWeight(i).getContents()) {
-                        writer.println(weight + " every weight");//every weight
+                        writer.println(weight + " weight");//every weight
                     }
                 }
             }

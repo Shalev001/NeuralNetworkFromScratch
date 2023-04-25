@@ -15,13 +15,17 @@ public class NeuralNetwork {
         
         File file = new File("C:\\Users\\shale\\OneDrive\\Desktop\\neuralNetworks\\network1.nnet");
 
-        int[] networkInfo = {3,2,2};
+        int[] networkInfo = {1,2};
         
         Network netW = new Network(networkInfo);
         
         netW.generateRandomWeights();
         
         netW.generateRandomBiases();
+        
+        netW.compute();
+        
+        netW.dumpOutput();  
         
         try {
             netW.export(file);
