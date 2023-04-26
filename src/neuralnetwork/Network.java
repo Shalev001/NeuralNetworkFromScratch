@@ -33,6 +33,10 @@ public class Network {
         return Layers[index];
     }
     
+    public void setInput(Vector input){
+        Layers[0].setValues(input);
+    }
+    
     public void compute() {
         try {
             for (Layer layer : Layers) {
@@ -44,6 +48,10 @@ public class Network {
     
     public void dumpOutput() {
         Layers[Layers.length - 1].dumpvals();
+    }
+    
+    public double[] getOutput(){
+        return Layers[Layers.length - 1].getvals();
     }
     
     public void generateRandomWeights() {

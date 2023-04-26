@@ -34,6 +34,19 @@ public class Layer {
         }
     }
     
+    public void setValues(Vector newVals) throws VectorDimensionsDoNotMatchException{
+        
+        double[] contents = newVals.getContents();
+        
+        if (newVals.getDimension() != size){
+            throw new VectorDimensionsDoNotMatchException();
+        }
+        for (int i = 0; i < size; i++) {
+            getPerceptron(i).setValue(contents[i]);
+            perceptronValues[i] = contents[i];
+        }
+    }
+    
     /**
      * a method to link the current layer with a pre-existing layer
      * @param previosLayer 
@@ -145,5 +158,13 @@ public class Layer {
         for(Perceptron perc : perceptrons){
             System.out.println(perc.getValue());
         }
+    }
+    
+    public double[] getvals(){
+        double[] output = new double[size];
+        for (int i = 0; i < size; i++) {
+            output[i] = perceptrons[i].getValue();
+        }
+        return output;
     }
 }
