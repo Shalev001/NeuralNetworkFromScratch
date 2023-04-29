@@ -42,8 +42,7 @@ public class Network {
             for (Layer layer : Layers) {
                 layer.calcNextLayer();
             }
-        } catch (NextLayerDoesNotExistException e) {
-        }
+        } catch (NextLayerDoesNotExistException e) {}
     }
     
     public void dumpOutput() {
@@ -181,6 +180,73 @@ public class Network {
         
         Vector diff = Vector.subtract(real, expected);
         
-        return Vector.magnitude(diff);
+        
+        return Vector.magnitude(diff)*Vector.magnitude(diff);
+    }
+    
+    public void batchGradientDiscent(Vector expected){ // only weights are being changed right now should be modified to change biases as well
+        
+        double gradiantComputingStep = 0.00001;
+        
+        double gradientDiscentStep = 1;//this should be changed and ideally a funtion should be used to find the optimal value on a per-weight basis
+        
+        compute();
+        
+        Vector unchangedOutput = new Vector(getOutput());
+        
+        double unchangedLoss = lossFunk(unchangedOutput,expected);// variable to keep track of the original loss
+        
+        int totalWeights = 0;//a variable to store the number of weights in the network in order to later create an array containing all of them
+        
+        for (int i = 0; i < Layers.length - 1; i++){//excluding the last layer since it hase no inisialized weights
+            // adding the number of weight vectors in the layer multiplied by the number of weights in each vector
+            totalWeights += Layers[i].getWeights().length * Layers[i].getWeight(0).getDimension();
+        }
+        
+        double[] weightSlopes = new double[totalWeights];// an array that will contain the slope of the loss function with relation to each weight
+        
+        int weightnum = 0;//a variable to keep track of the index of the weight being worked on. every weight in the network will be indexed according to the following loop
+        
+        double originalValue;//a variable to keep track of the original value of each weight when it is being proccessed
+        
+        for (int i = 0; i < Layers.length - 1; i++) {//for every layer
+            for (int j = 0; j < Layers[i].getWeights().length; j++) {//for every weight vector
+                for (int k = 0; k < Layers[i].getWeight(0).getDimension(); k++) {//for every weight in the vector
+                    
+                    originalValue = Layers[i].getWeight(j).getContents()[k];
+                    
+                    Layers[i].getWeight(j).setValue(k, originalValue + gradiantComputingStep);
+                    
+                    compute();
+                    
+                    //calculating the slope using first principals
+                    weightSlopes[weightnum] = (lossFunk(new Vector(getOutput()),expected) - unchangedLoss)/gradiantComputingStep;
+                    
+                    Layers[i].getWeight(j).setValue(k, originalValue);//reseting the network to what it was before
+                    
+                    weightnum++;
+                }
+            }
+        }
+        
+        weightnum = 0;//reseting weightnum in order to acsess weightslopes in the order it was written to
+        
+        //repeating through the loops again, this time move each weight according to its slope and the step size in 
+        //order to minimise the loss function
+        for (int i = 0; i < Layers.length - 1; i++) {//for every layer
+            for (int j = 0; j < Layers[i].getWeights().length; j++) {//for every weight vector
+                for (int k = 0; k < Layers[i].getWeight(0).getDimension(); k++) {//for every weight in the vector
+                    
+                    //System.out.println(k + ":" + Layers[i].getWeight(j).getContents()[k]);
+                    
+                    originalValue = Layers[i].getWeight(j).getContents()[k];
+                    
+                    //moving each value in the direction that would decrease the loss function
+                    Layers[i].getWeight(j).setValue(k, originalValue - weightSlopes[weightnum]*gradientDiscentStep);
+                    
+                    weightnum++;
+                }
+            }
+        }
     }
 }

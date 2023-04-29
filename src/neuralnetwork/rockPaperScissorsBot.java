@@ -24,8 +24,6 @@ public class rockPaperScissorsBot {
 
             Scanner reader = new Scanner(System.in);
             
-            
-            
             int num;
 
             while (true) {
@@ -49,11 +47,11 @@ public class rockPaperScissorsBot {
                 
                 output = net.getOutput();
                 
-                if (output[0] == 1){
+                if (output[0] > output[1] && output[0] > output[2]){
                     System.out.println("rock paper scissors bot chooses: Rock");
-                }else if (output[1] == 1){
+                }else if (output[1] > output[0] && output[1] > output[2]){
                     System.out.println("rock paper scissors bot chooses: paper");
-                }else if (output[2] == 1){
+                }else if (output[2] > output[1] && output[2] > output[0]){
                     System.out.println("rock paper scissors bot chooses: scissors");
                 }
 

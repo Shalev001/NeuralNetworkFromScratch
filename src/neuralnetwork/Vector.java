@@ -30,6 +30,9 @@ public class Vector {
         this.contents = contents;
         dimension = contents.length;
     }
+    public void setValue(int index,double value){
+        contents[index] = value;
+    }
 
     public double dotProduct(Vector vector) throws VectorDimensionsDoNotMatchException {
 
@@ -151,11 +154,13 @@ public class Vector {
     }
     
     public String toString(){
-        String str = "";
+        String str = "[";
         
         for (double num : contents){
-            str += num + "\n";
+            str += num + ",";
         }
+        
+        str += "]";
         
         return str;
     }

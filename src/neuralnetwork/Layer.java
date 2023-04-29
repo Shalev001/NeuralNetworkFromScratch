@@ -86,6 +86,9 @@ public class Layer {
             perceptronValues[i] = perceptrons[i].getValue();
         }
     }
+    public void setPerceptronVal(int index,double val){
+        perceptronValues[index] = val;
+    }
     
     public void setPerceptron(int index,Perceptron perceptron) {
         perceptrons[index] = perceptron;
@@ -151,6 +154,7 @@ public class Layer {
             val = sigmoid(val);
             
             nextLayer.getPerceptron(i).setValue(val);
+            nextLayer.setPerceptronVal(i, val);
         }
     }
     
