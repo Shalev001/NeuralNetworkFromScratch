@@ -248,5 +248,46 @@ public class Network {
                 }
             }
         }
+        
+        int totalBiases = 0;//a variable to store the number of weights in the network in order to later create an array containing all of them
+        
+        for (int i = 1; i < Layers.length; i++){//excluding the first layer since its biases are never used
+            // adding the number of weight vectors in the layer multiplied by the number of weights in each vector
+            totalBiases += Layers[i].getPerceptrons().length;
+        }
+        
+        double[] biasSlopes = new double[totalBiases];// an array that will contain the slope of the loss function with relation to each bias
+    
+        int biasnum = 0;//a variable to keep track of the index of the bias being worked on. every bias in the network will be indexed according to the following loop
+    
+        for (int i = 1; i < Layers.length; i++) {//for every layer except the first
+            for (int j = 0; j < Layers[i].getPerceptrons().length; j++) {//for every perceptron
+                
+                originalValue = Layers[i].getPerceptron(j).getBias();
+                    
+                Layers[i].getPerceptron(j).setValue(originalValue + gradiantComputingStep);
+                
+                compute();
+                
+                biasSlopes[biasnum] = (lossFunk(new Vector(getOutput()),expected) - unchangedLoss)/gradiantComputingStep;
+            
+                Layers[i].getPerceptron(j).setValue(originalValue);
+
+                biasnum++;
+            }
+        }
+        
+        biasnum = 0;
+        
+        for (int i = 1; i < Layers.length; i++) {//for every layer except the first
+            for (int j = 0; j < Layers[i].getPerceptrons().length; j++) {//for every perceptron
+                
+                originalValue = Layers[i].getPerceptron(j).getBias();
+                    
+                Layers[i].getPerceptron(j).setValue(originalValue - biasSlopes[biasnum]*gradientDiscentStep);
+
+                biasnum++;
+            }
+        }
     }
 }

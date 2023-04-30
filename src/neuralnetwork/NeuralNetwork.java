@@ -14,10 +14,12 @@ import java.util.logging.Logger;
 public class NeuralNetwork {
 
     public static void main(String[] args) {
+        
+        File exportLoc = new File("C:\\Users\\shale\\OneDrive\\Desktop\\neuralNetworks\\generated-Rock-Paper-Scissors-Bot.nnet");
 
         int[] netInfo = {3, 3};
         
-        System.out.println("generating randome network");
+        System.out.println("generating random network");
 
         Network net = new Network(netInfo);
 
@@ -33,7 +35,7 @@ public class NeuralNetwork {
                 for (int j = 0; j < 50; j++) {
                     net.setInput(inputs[i]);
                     net.compute();
-                    //System.out.println(Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
+                    System.out.println(""+Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
                     //System.out.println(Arrays.toString(net.getOutput()) + " : " + expectedOutputs[i].toString());
                     net.batchGradientDiscent(expectedOutputs[i]);
                 }
@@ -41,7 +43,7 @@ public class NeuralNetwork {
         }
 
         System.out.println("training complete");
-        
+
         Scanner reader = new Scanner(System.in);
 
         int num;
