@@ -35,7 +35,7 @@ public class NeuralNetwork {
                 for (int j = 0; j < 50; j++) {
                     net.setInput(inputs[i]);
                     net.compute();
-                    System.out.println(""+Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
+                    //System.out.println("loss function: "+Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
                     //System.out.println(Arrays.toString(net.getOutput()) + " : " + expectedOutputs[i].toString());
                     net.batchGradientDiscent(expectedOutputs[i]);
                 }
