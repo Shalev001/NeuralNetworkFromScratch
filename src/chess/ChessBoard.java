@@ -78,7 +78,7 @@ public class ChessBoard {
         }
 
         for (int i = 0; i < enemyPieces.size(); i++) {
-            if (enemyPieces.get(i).canMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
+            if (enemyPieces.get(i).canMove(xLoc, yLoc, alliedPieces, enemyPieces)) {
                 return i;
             }
         }
@@ -99,41 +99,44 @@ public class ChessBoard {
             enemyPieces = white;
             alliedPieces = black;
 
-            preTurnEnemy = new ArrayList<>();
-            for (int i = 0; i < white.size(); i++) {
-                preTurnEnemy.add(null);
-            }
-            Collections.copy(preTurnEnemy, white);
+            preTurnEnemy = (ArrayList<Piece>) white.clone();
+
         } else {
             xOrg = white.get(0).pieceLocation[0];
             yOrg = white.get(0).pieceLocation[1];
             enemyPieces = black;
             alliedPieces = white;
 
-            preTurnEnemy = new ArrayList<>();
-            for (int i = 0; i < black.size(); i++) {
-                preTurnEnemy.add(null);
-            }
-            Collections.copy(preTurnEnemy, black);
+            preTurnEnemy = (ArrayList<Piece>) black.clone();
         }
 
-        if (black.get(0).move(xLoc, yLoc, enemyPieces, alliedPieces)) {
+        boolean flag = false;
+
+        if (alliedPieces.get(0).move(xLoc, yLoc, enemyPieces, alliedPieces)) {
 
             for (int i = 0; i < enemyPieces.size(); i++) {
-                if (enemyPieces.get(i).canMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
-                    black.get(0).move(xOrg, yOrg, enemyPieces, alliedPieces);
-                    black.get(0).movecountdown(2);
+                if (enemyPieces.get(i).canMove(xLoc, yLoc, alliedPieces, enemyPieces)) {
+                    alliedPieces.get(0).move(xOrg, yOrg, enemyPieces, alliedPieces);
+                    alliedPieces.get(0).movecountdown(2);
                     enemyPieces = preTurnEnemy;
-                    return true;
+                    flag = true;
                 }
             }
-            black.get(0).move(xOrg, yOrg, enemyPieces, alliedPieces);
-            black.get(0).movecountdown(2);
+            alliedPieces.get(0).move(xOrg, yOrg, enemyPieces, alliedPieces);
+            alliedPieces.get(0).movecountdown(2);
             enemyPieces = preTurnEnemy;
-            return false;
         }
 
-        return false;
+        if (colour == 0) {
+            white = enemyPieces;
+            black = alliedPieces;
+
+        } else {
+            black = enemyPieces;
+            white = alliedPieces;
+        }
+
+        return flag;
     }
 
     private boolean KingUnableToMove(int colour) {
@@ -153,8 +156,8 @@ public class ChessBoard {
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                if ((j != 0 || i != 0) && (Piece.SonBoard(kingxLoc+j,kingyLoc+i) )) {
-                    
+                if ((j != 0 || i != 0) && (Piece.SonBoard(kingxLoc + j, kingyLoc + i))) {
+
                     if (!wouldBeInCheck(kingxLoc + j, kingyLoc + i, colour)) {
                         flag = false;
                     }
@@ -234,6 +237,9 @@ public class ChessBoard {
         }
 
         //finding the piece that is threataning the king
+        if (inCheck(colour) == -1) {
+            return false;
+        }
         Piece threataningPiece = enemyPieces.get(inCheck(colour));
 
         //if the piece is a pawn or knight the only option is to take it
@@ -241,7 +247,7 @@ public class ChessBoard {
             //checking if it can be taken
             for (int i = 1; i < alliedPieces.size(); i++) {//excluding king since it must be stuck
                 if (alliedPieces.get(i).canMove(threataningPiece.getPieceLocation()[0],
-                         threataningPiece.getPieceLocation()[0], enemyPieces, alliedPieces)) {
+                        threataningPiece.getPieceLocation()[0], enemyPieces, alliedPieces)) {
                     return false;
                 }
             }
@@ -251,14 +257,14 @@ public class ChessBoard {
             //checking if it can be taken
             for (int i = 1; i < alliedPieces.size(); i++) {//excluding king since it must be stuck
                 if (alliedPieces.get(i).canMove(threataningPiece.getPieceLocation()[0],
-                         threataningPiece.getPieceLocation()[0], enemyPieces, alliedPieces)) {
+                        threataningPiece.getPieceLocation()[0], enemyPieces, alliedPieces)) {
                     return false;
                 }
             }
             for (int[] spaceBetween : threataningPiece.spacesBetween(xLoc, yLoc)) {
                 for (int i = 1; i < alliedPieces.size(); i++) {//excluding king since it must be stuck
                     if (alliedPieces.get(i).canMove(spaceBetween[0],
-                             spaceBetween[1], enemyPieces, alliedPieces)) {
+                            spaceBetween[1], enemyPieces, alliedPieces)) {
                         return false;
                     }
                 }
