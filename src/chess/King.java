@@ -10,14 +10,19 @@ import java.util.ArrayList;
  *
  * @author shale
  */
-public class King extends Piece{
-    
+public class King extends Piece {
+
     public King(int xLoc, int yLoc, int pieceColor) {
         super(xLoc, yLoc, pieceColor);
 
         pieceNum = 5;
 
         pieceValue = 0;
+    }
+
+
+    public int[][] spacesBetween(int xLoc,int yLoc){
+        return null;
     }
 
     public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
@@ -49,15 +54,11 @@ public class King extends Piece{
         if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces)) {
             return false;
         }
-
+        
         int xdiff = xLoc - pieceLocation[0];
         int ydiff = yLoc - pieceLocation[1];
 
         if ((Math.abs(xdiff) + Math.abs(ydiff) <= 2) && Math.abs(xdiff) < 2 && Math.abs(ydiff) < 2) {
-
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
 
             return true;
         }

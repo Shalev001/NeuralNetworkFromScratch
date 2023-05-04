@@ -20,7 +20,10 @@ public class Pawn extends Piece {
         pieceValue = 1;
     }
     
-
+    public int[][] spacesBetween(int xLoc,int yLoc){
+        return null;
+    }
+    
     public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
 
         if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces)) {
@@ -125,8 +128,6 @@ public class Pawn extends Piece {
             else if ((pieceLocation[0] == xLoc + 1 || pieceLocation[0] == xLoc - 1)
                     && enemyPieceThere(xLoc, yLoc, enemyPieces) != -1 && pieceLocation[1] == (yLoc - 1)) {
 
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-
                 return true;
             }
         } else {
@@ -150,8 +151,6 @@ public class Pawn extends Piece {
             } //taking move
             else if ((pieceLocation[0] == xLoc + 1 || pieceLocation[0] == xLoc - 1)
                     && enemyPieceThere(xLoc, yLoc, enemyPieces) != -1 && pieceLocation[1] == (yLoc + 1)) {
-
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
 
                 return true;
             }

@@ -1,5 +1,7 @@
 package neuralnetwork;
 
+import activationFunctions.Function;
+import activationFunctions.sigmoid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ public class NeuralNetwork {
 
         int[] netInfo = {3, 3};
         
+        Function actiFunc = new sigmoid();
+        
         System.out.println("generating random network");
 
         Network net = new Network(netInfo);
@@ -34,10 +38,10 @@ public class NeuralNetwork {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 50; j++) {
                     net.setInput(inputs[i]);
-                    net.compute();
+                    net.compute(actiFunc);
                     //System.out.println("loss function: "+Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
                     //System.out.println(Arrays.toString(net.getOutput()) + " : " + expectedOutputs[i].toString());
-                    net.batchGradientDiscent(expectedOutputs[i]);
+                    net.batchGradientDiscent(expectedOutputs[i],actiFunc);
                 }
             }
         }
@@ -65,7 +69,7 @@ public class NeuralNetwork {
 
             net.setInput(new Vector(choice));
 
-            net.compute();
+            net.compute(actiFunc);
 
             output = net.getOutput();
 

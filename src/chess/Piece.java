@@ -25,6 +25,8 @@ public abstract class Piece {
         
         pieceLocation = new int[2];
         
+        pieceColour = colour;
+        
         pieceLocation[0] = xLoc;
         pieceLocation[1] = yLoc;
         
@@ -32,14 +34,25 @@ public abstract class Piece {
     }
     
     /**
-     * a method to check of the intended move is on the board made to make if
-     * statements more readable
      *
      * @param xLoc
      * @param yLoc
-     * @return returns if the given x-y position is on the board
+     * @return
      */
     protected boolean onBoard(int xLoc, int yLoc) {
+        if ((xLoc >= 1 && xLoc <= 8) && (yLoc >= 1 && yLoc <= 8)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * static version
+     * @param xLoc
+     * @param yLoc
+     * @return 
+     */
+    public static boolean SonBoard(int xLoc, int yLoc) {
         if ((xLoc >= 1 && xLoc <= 8) && (yLoc >= 1 && yLoc <= 8)) {
             return true;
         } else {
@@ -67,6 +80,8 @@ public abstract class Piece {
     public abstract boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces);
     
     public abstract boolean canMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces);
+    
+    public abstract int[][] spacesBetween(int xLoc,int yLoc);
 
     public int getPieceValue() {
         return pieceValue;
@@ -78,6 +93,10 @@ public abstract class Piece {
 
     public int getPieceNum() {
         return pieceNum;
+    }
+    
+    public void movecountdown(int num){
+        moveCount -= num;
     }
        
 }

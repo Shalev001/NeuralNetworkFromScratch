@@ -20,6 +20,55 @@ public class Queen extends Piece {
         pieceValue = 9;
     }
 
+    public int[][] spacesBetween(int xLoc, int yLoc) {
+
+        int xdiff = xLoc - pieceLocation[0];
+        int ydiff = yLoc - pieceLocation[1];
+
+        if (xdiff == ydiff) {//if its acting like a bishop
+            int[][] locs = new int[xdiff - 1][2];
+
+            if (xdiff > 1) {
+
+                for (int i = xdiff - 1; i > 0; i--) {
+
+                    locs[i - 1][0] = xLoc - i;
+                    locs[i - 1][1] = yLoc - (ydiff / Math.abs(ydiff)) * i;
+
+                }
+
+            } else if (xdiff < -1) {
+
+                for (int i = xdiff + 1; i < 0; i++) {
+                    locs[-1 * (i + 1)][0] = xLoc - i;
+                    locs[-1 * (i + 1)][1] = yLoc - (ydiff / Math.abs(ydiff)) * i;
+                }
+
+            }
+            return locs;
+            
+        } else {// if its acting like a rook
+            
+            int[][] locs;
+
+            if (xdiff != 0) {
+                locs = new int[xdiff - 1][2];
+                for (int i = xdiff - xdiff / Math.abs(xdiff); i != 0; i -= xdiff / Math.abs(xdiff)) {
+                    locs[Math.abs(i - xdiff / Math.abs(xdiff))][0] = xLoc - i;
+                    locs[Math.abs(i - xdiff / Math.abs(xdiff))][1] = yLoc;
+                }
+            } else {
+                locs = new int[ydiff - 1][2];
+                for (int i = ydiff - ydiff / Math.abs(ydiff); i != 0; i -= ydiff / Math.abs(ydiff)) {
+                    locs[Math.abs(i - ydiff / Math.abs(ydiff))][0] = xLoc;
+                    locs[Math.abs(i - ydiff / Math.abs(ydiff))][1] = yLoc - i;
+                }
+            }
+            return locs;
+        }
+
+    }
+
     // you didn't see anything (O_-)
     private boolean bishopMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
 
@@ -61,7 +110,7 @@ public class Queen extends Piece {
 
                 for (int i = xdiff - 1; i > 0; i--) {
                     if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1
-                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), alliedPieces)) {
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
                         return false;
                     }
                 }
@@ -70,15 +119,11 @@ public class Queen extends Piece {
 
                 for (int i = xdiff + 1; i < 0; i++) {
                     if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1
-                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), alliedPieces)) {
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
                         return false;
                     }
                 }
 
-            }
-
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
             }
 
             return true;
@@ -86,10 +131,10 @@ public class Queen extends Piece {
 
         return false;
     }
-    
+
     private boolean rookMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
 
-        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces)) {
+        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces) || !canMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
             return false;
         }
 
@@ -134,49 +179,43 @@ public class Queen extends Piece {
             return false;
         }
 
-        
         if (xdiff != 0) {
-            for (int i = xdiff - xdiff/Math.abs(xdiff); i != 0 ; i -= xdiff/Math.abs(xdiff)) {
+            for (int i = xdiff - xdiff / Math.abs(xdiff); i != 0; i -= xdiff / Math.abs(xdiff)) {
                 if (enemyPieceThere(xLoc - i, yLoc, enemyPieces) != -1
                         || alliedPieceThere(xLoc - i, yLoc, alliedPieces)) {
                     return false;
                 }
             }
         } else if (ydiff != 0) {
-            for (int i = ydiff - ydiff/Math.abs(ydiff); i != 0 ; i -= ydiff/Math.abs(ydiff)) {
+            for (int i = ydiff - ydiff / Math.abs(ydiff); i != 0; i -= ydiff / Math.abs(ydiff)) {
                 if (enemyPieceThere(xLoc, yLoc - i, enemyPieces) != -1
                         || alliedPieceThere(xLoc, yLoc - i, alliedPieces)) {
                     return false;
                 }
             }
-        } 
-        
-        else if (ydiff != 0) {
+        }
 
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
+        if (ydiff != 0) {
+
             return true;
-        } 
-        else if (xdiff != 0) {
+        } else if (xdiff != 0) {
 
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
             return true;
         }
         return false;
     }
 
-    public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces){
-        if (bishopMove(xLoc, yLoc, enemyPieces, alliedPieces) || rookMove(xLoc, yLoc, enemyPieces, alliedPieces))
+    public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
+        if (bishopMove(xLoc, yLoc, enemyPieces, alliedPieces) || rookMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
             return true;
+        }
         return false;
     }
-    
-    public boolean canMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces){
-        if (bishopCanMove(xLoc, yLoc, enemyPieces, alliedPieces) || rookCanMove(xLoc, yLoc, enemyPieces, alliedPieces))
+
+    public boolean canMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
+        if (bishopCanMove(xLoc, yLoc, enemyPieces, alliedPieces) || rookCanMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
             return true;
+        }
         return false;
     }
 }

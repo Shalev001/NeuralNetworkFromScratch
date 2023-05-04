@@ -20,9 +20,38 @@ public class Bishop extends Piece {
         pieceValue = 3;
     }
 
+    public int[][] spacesBetween(int xLoc, int yLoc) {
+
+        int xdiff = xLoc - pieceLocation[0];
+        int ydiff = yLoc - pieceLocation[1];
+
+        int[][] locs = new int[xdiff - 1][2];
+
+        if (xdiff > 1) {
+
+            for (int i = xdiff - 1; i > 0; i--) {
+
+                locs[i - 1][0] = xLoc - i;
+                locs[i - 1][1] = yLoc - (ydiff / Math.abs(ydiff)) * i;
+
+            }
+
+        } else if (xdiff < -1) {
+
+            for (int i = xdiff + 1; i < 0; i++) {
+                locs[-1 * (i + 1)][0] = xLoc - i;
+                locs[-1 * (i + 1)][1] = yLoc - (ydiff / Math.abs(ydiff)) * i;
+            }
+
+        }
+
+        return locs;
+
+    }
+
     public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
 
-        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces) || !canMove(xLoc,yLoc,enemyPieces,alliedPieces)) {
+        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces) || !canMove(xLoc, yLoc, enemyPieces, alliedPieces)) {
             return false;
         }
 
@@ -57,27 +86,23 @@ public class Bishop extends Piece {
 
             //checking if the move is blocked by a piece
             if (xdiff > 1) {
-                
-                for (int i = xdiff - 1; i > 0; i--) {
-                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1 ||
-                            alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), alliedPieces)){
-                        return false;
-                    }
-                }
-                
-            } else if (xdiff < -1){
-                
-                for (int i = xdiff + 1; i < 0; i++) {
-                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1 ||
-                            alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), alliedPieces)){
-                        return false;
-                    }
-                }
-                
-            }
 
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
+                for (int i = xdiff - 1; i > 0; i--) {
+                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, enemyPieces) != -1
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
+                        return false;
+                    }
+                }
+
+            } else if (xdiff < -1) {
+
+                for (int i = xdiff + 1; i < 0; i++) {
+                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, enemyPieces) != -1
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
+                        return false;
+                    }
+                }
+
             }
 
             return true;

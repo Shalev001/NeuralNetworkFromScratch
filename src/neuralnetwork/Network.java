@@ -1,5 +1,6 @@
 package neuralnetwork;
 
+import activationFunctions.Function;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,10 +38,10 @@ public class Network {
         Layers[0].setValues(input);
     }
     
-    public void compute() {
+    public void compute(Function actiFunc) {
         try {
             for (Layer layer : Layers) {
-                layer.calcNextLayer();
+                layer.calcNextLayer(actiFunc);
             }
         } catch (NextLayerDoesNotExistException e) {}
     }
@@ -184,13 +185,13 @@ public class Network {
         return Vector.magnitude(diff)*Vector.magnitude(diff);
     }
     
-    public void batchGradientDiscent(Vector expected){ // only weights are being changed right now should be modified to change biases as well
+    public void batchGradientDiscent(Vector expected,Function actiFunc){ // only weights are being changed right now should be modified to change biases as well
         
         double gradiantComputingStep = 0.00001;
         
         double gradientDiscentStep = 1;//this should be changed and ideally a funtion should be used to find the optimal value on a per-weight basis
         
-        compute();
+        compute(actiFunc);
         
         Vector unchangedOutput = new Vector(getOutput());
         
@@ -217,7 +218,7 @@ public class Network {
                     
                     Layers[i].getWeight(j).setValue(k, originalValue + gradiantComputingStep);
                     
-                    compute();
+                    compute(actiFunc);
                     
                     //calculating the slope using first principals
                     weightSlopes[weightnum] = (lossFunk(new Vector(getOutput()),expected) - unchangedLoss)/gradiantComputingStep;
@@ -267,7 +268,7 @@ public class Network {
                     
                 Layers[i].getPerceptron(j).setValue(originalValue + gradiantComputingStep);
                 
-                compute();
+                compute(actiFunc);
                 
                 biasSlopes[biasnum] = (lossFunk(new Vector(getOutput()),expected) - unchangedLoss)/gradiantComputingStep;
             

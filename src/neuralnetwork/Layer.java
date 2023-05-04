@@ -4,15 +4,15 @@
  */
 package neuralnetwork;
 
+import activationFunctions.Function;
+
 /**
  *
  * @author shale
  */
 public class Layer {
     
-    public double sigmoid(double input){
-        return (1/(1+Math.pow(Math.E,-input)));
-    }
+    
     
     protected Layer previosLayer;
     protected Layer nextLayer;
@@ -139,7 +139,7 @@ public class Layer {
     /**
      * a method that uses the existing wights to calculate the values of the perceptrons in the next Layer
      */
-    public void calcNextLayer() throws NextLayerDoesNotExistException{
+    public void calcNextLayer(Function actiFunc) throws NextLayerDoesNotExistException{
         double val;
         Vector values = new Vector(perceptronValues);
         
@@ -151,7 +151,7 @@ public class Layer {
             
             val = nextLayer.getPerceptron(i).getBias()+ Vector.dotProduct(values, weights[i]);
             
-            val = sigmoid(val);
+            val = actiFunc.compute(val);
             
             nextLayer.getPerceptron(i).setValue(val);
             nextLayer.setPerceptronVal(i, val);

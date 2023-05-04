@@ -10,14 +10,18 @@ import java.util.ArrayList;
  *
  * @author shale
  */
-public class Knight extends Piece{
-    
-        public Knight(int xLoc, int yLoc, int pieceColor) {
+public class Knight extends Piece {
+
+    public Knight(int xLoc, int yLoc, int pieceColor) {
         super(xLoc, yLoc, pieceColor);
 
         pieceNum = 2;
 
         pieceValue = 3;
+    }
+
+    public int[][] spacesBetween(int xLoc, int yLoc) {
+        return null;
     }
 
     public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
@@ -54,10 +58,6 @@ public class Knight extends Piece{
         int ydiff = yLoc - pieceLocation[1];
 
         if ((Math.abs(xdiff) + Math.abs(ydiff) == 3) && xdiff != 0 && ydiff != 0) {
-
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
 
             return true;
         }

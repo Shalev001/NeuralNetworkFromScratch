@@ -22,7 +22,7 @@ public class Rook extends Piece {
 
     public boolean move(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
 
-        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces)) {
+        if (!onBoard(xLoc, yLoc) || alliedPieceThere(xLoc, yLoc, alliedPieces) || !canMove(xLoc,yLoc,enemyPieces,alliedPieces)) {
             return false;
         }
 
@@ -52,6 +52,31 @@ public class Rook extends Piece {
         }
 
         return false;
+    }
+    
+        public int[][] spacesBetween(int xLoc, int yLoc) {
+
+        int xdiff = xLoc - pieceLocation[0];
+        int ydiff = yLoc - pieceLocation[1];
+
+        int[][] locs;
+
+        if (xdiff != 0) {
+            locs = new int[xdiff - 1][2];
+            for (int i = xdiff - xdiff/Math.abs(xdiff); i != 0 ; i -= xdiff/Math.abs(xdiff)) {
+                locs[Math.abs(i - xdiff/Math.abs(xdiff))][0] = xLoc - i;
+                locs[Math.abs(i - xdiff/Math.abs(xdiff))][1] = yLoc;
+            }
+        } else{
+            locs = new int[ydiff - 1][2];
+            for (int i = ydiff - ydiff/Math.abs(ydiff); i != 0 ; i -= ydiff/Math.abs(ydiff)) {
+                locs[Math.abs(i - ydiff/Math.abs(ydiff))][0] = xLoc;
+                locs[Math.abs(i - ydiff/Math.abs(ydiff))][1] = yLoc - i;
+            }
+        } 
+
+        return locs;
+
     }
 
     public boolean canMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
@@ -84,18 +109,12 @@ public class Rook extends Piece {
             }
         } 
         
-        else if (ydiff != 0) {
+        if (ydiff != 0) {
 
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
             return true;
         } 
         else if (xdiff != 0) {
 
-            if (enemyPieceThere(xLoc, yLoc, enemyPieces) != -1) {
-                enemyPieces.remove(enemyPieceThere(xLoc, yLoc, enemyPieces));
-            }
             return true;
         }
         return false;

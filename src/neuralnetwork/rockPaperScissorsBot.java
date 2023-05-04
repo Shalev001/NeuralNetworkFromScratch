@@ -4,6 +4,8 @@
  */
 package neuralnetwork;
 
+import activationFunctions.Function;
+import activationFunctions.sigmoid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,6 +26,8 @@ public class rockPaperScissorsBot {
 
             Scanner reader = new Scanner(System.in);
             
+            Function actiFunc = new sigmoid();
+            
             int num;
 
             while (true) {
@@ -43,7 +47,7 @@ public class rockPaperScissorsBot {
                 
                 net.setInput(new Vector(choice));
                 
-                net.compute();
+                net.compute(actiFunc);
                 
                 output = net.getOutput();
                 
