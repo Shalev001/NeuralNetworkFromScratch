@@ -6,6 +6,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import neuralnetwork.Vector;
 
 /**
  *
@@ -272,6 +273,86 @@ public class ChessBoard {
             return true;
         }
 
+    }
+
+    public ArrayList<Piece> getWhite() {
+        return white;
+    }
+
+    public ArrayList<Piece> getBlack() {
+        return black;
+    }
+    
+    /**
+     * a method to take the current board state and convert it into input for a neural network.
+     * follows the format outlined in the design document
+     * @param colour
+     * @return 
+     */
+    public Vector toNNetInput(int colour){
+        
+        double[] output = new double[65];//every piece on the board plus an entry for the colour
+        
+        for (double entry : output){
+            entry = 0;
+        }
+        
+        output[65] = colour; //the last entry is the colour;
+        
+        for(Piece piece : white){
+            //             xLocation              +          yLocation * 8    adding one since the first index should be the colour
+            output[(piece.getPieceLocation()[0]-1 + (piece.getPieceLocation()[1]-1)* 8)] = piece.getPieceNum()+1;//entering the piece code for the specific piece
+        }
+        for(Piece piece : black){
+            output[(piece.getPieceLocation()[0]-1 + (piece.getPieceLocation()[1]-1)* 8)] = piece.getPieceNum()+7;
+        }
+        
+        return new Vector(output);
+    }
+    
+    public static int[] indexToCoordinates(int index){
+        
+        int[] output = new int[2];
+        
+        output[0] = (index % 8)+1;
+        
+        output[1] = (index / 8)+1;
+        
+        return output;
+    }
+    
+    public int getEnemyPointTotal(){
+        
+        int sum = 0;
+        
+        if (turn == 0){
+            for(Piece piece : white){
+                sum += piece.getPieceValue();
+            }
+        }else{
+            for(Piece piece : black){
+                sum += piece.getPieceValue();
+            }
+        }
+        
+        return sum;
+    }
+    
+    public int getAlliedPointTotal(){
+        
+        int sum = 0;
+        
+        if (turn == 0){
+            for(Piece piece : black){
+                sum += piece.getPieceValue();
+            }
+        }else{
+            for(Piece piece : white){
+                sum += piece.getPieceValue();
+            }
+        }
+        
+        return sum;
     }
 
     public int getTurn() {
