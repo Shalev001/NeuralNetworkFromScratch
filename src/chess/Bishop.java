@@ -97,8 +97,8 @@ public class Bishop extends Piece {
             } else if (xdiff < -1) {
 
                 for (int i = xdiff + 1; i < 0; i++) {
-                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, enemyPieces) != -1
-                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
+                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * -i, enemyPieces) != -1
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * -i, alliedPieces)) {
                         return false;
                     }
                 }

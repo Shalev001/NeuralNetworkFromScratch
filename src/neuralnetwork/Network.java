@@ -293,7 +293,7 @@ public class Network {
 
     public void partialGradientDiscent(Vector expected, double stepSize, int numOWeights, int numOBiases, Function actiFunc) { // only weights are being changed right now should be modified to change biases as well
 
-        double gradiantComputingStep = 0.00001;
+        double gradiantComputingStep = 0.000001;
 
         double gradientDiscentStep = stepSize;//this should be changed and ideally a funtion should be used to find the optimal value on a per-weight basis
 
@@ -302,7 +302,7 @@ public class Network {
         Vector unchangedOutput = new Vector(getOutput());
 
         double unchangedLoss = lossFunk(unchangedOutput, expected);// variable to keep track of the original loss
-
+        
         int totalWeights = 0;//a variable to store the number of weights in the network in order to later create an array containing all of them
 
         for (int i = 0; i < Layers.length - 1; i++) {//excluding the last layer since it hase no inisialized weights
@@ -314,6 +314,8 @@ public class Network {
         double[] weightSlopes = new double[numOWeights];// an array that will contain the slope of the loss function with relation to each weight
         int[] weightIndexes = new int[numOWeights];
 
+        
+        
         for (int weightnum = 0; weightnum < numOWeights; weightnum++) {//a variable to keep track of the index of the weight being worked on. every weight in the network will be indexed according to the following loop
 
             int rand = (int) (Math.random() * totalWeights);//the index of a randome weight
@@ -376,7 +378,7 @@ public class Network {
                 }
             }
         }
-
+        
         int totalBiases = 0;//a variable to store the number of weights in the network in order to later create an array containing all of them
 
         for (int i = 1; i < Layers.length; i++) {//excluding the first layer since its biases are never used
@@ -440,5 +442,8 @@ public class Network {
                 }
             }
         }
+
+        compute(actiFunc);
+        System.out.println(unchangedLoss - lossFunk(new Vector(getOutput()),expected));
     }
 }

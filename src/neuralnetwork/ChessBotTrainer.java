@@ -18,10 +18,13 @@ public class ChessBotTrainer {
     
     public static void main(String[] args) {
         
+        int numOWeights = 10;
+        int numOBiases = 10;
+        
         Function actiFunc = new ReLU();
         
         //8192
-        int[] networkInfo = {65 , 4096, 8192, 4096};
+        int[] networkInfo = {65 , 8192, 4096, 4096};
         
         Network nnet1 = new Network(networkInfo);
         ArrayList<Vector[]> nnet1TurnHistory = new ArrayList<>();
@@ -83,32 +86,53 @@ public class ChessBotTrainer {
             //computing the networks choice of move
             currentPlayer.compute(actiFunc);
             
+            
             double[] output = currentPlayer.getOutput();
             int choice = outputToChoice(output);
             
             int[] coordinates = ChessBoard.indexToCoordinates(choice);
             
+            System.out.println("(" + (coordinates[0]+1) + "," + (coordinates[1]+1) + ") --> (" + (coordinates[2]+1) + "," + (coordinates[3]+1) + ")");
+            
             //taking the move specified by the network
-            if (!cb.takeNextTurn(coordinates[0], coordinates[1], coordinates[2], coordinates[3])){
+            if (!cb.takeNextTurn(coordinates[0]+1, coordinates[1]+1, coordinates[2]+1, coordinates[3]+1)){
                 legalMove = false;
             }else{
                 System.out.println(cb.toString());
             }
             
             //if the network chose an ilegal move it will be trained until it does not
-            int reward;
+            double reward;
             
             if (!legalMove){
                 
                 System.out.println(rep);
                 
+                
                 reward = -10;
-                
+                               
                 // making the chosen move 10% less likly given the same context
+                //System.out.println(output[choice]);
                 output[choice] *= 1 + reward/100;
+                //System.out.println(currentPlayer.getOutput()[choice]);
+                                
+                double originalLoss = Network.lossFunk(new Vector(currentPlayer.getOutput()), new Vector(output));
                 
-                currentPlayer.batchGradientDiscent(new Vector(output),1, actiFunc);
-                System.out.println("hi");
+                //System.out.println("##########");
+                
+
+                currentPlayer.partialGradientDiscent(new Vector(output),0.0000000001,numOWeights,numOBiases, actiFunc);
+                
+                currentPlayer.compute(actiFunc);
+                
+                //System.out.println(currentPlayer.getOutput()[choice]);
+                
+                double newLoss = Network.lossFunk(new Vector(currentPlayer.getOutput()), new Vector(output));
+                
+                
+                //System.out.println(currentPlayer.getOutput()[choice]);
+                //System.out.println(originalLoss + " -> " + newLoss);
+                //System.out.println("##########");
                 
             }else{//in the proccess of recording turn history and training the neural network acording to rewards
                 reward = preTurnEnemyValue - cb.getEnemyPointTotal();
@@ -118,20 +142,20 @@ public class ChessBotTrainer {
                 currentTurnHistory.add(turn);
                 currentChoiceHistory.add(choice);
                 if (reward != 0){//training both networks based on the reward
-                    adjustWeights(currentPlayer,currentTurnHistory,currentChoiceHistory,reward,actiFunc);
-                    adjustWeights(otherPlayer,otherTurnHistory,otherChoiceHistory,-reward,actiFunc);
+                    adjustWeights(currentPlayer,currentTurnHistory,currentChoiceHistory,reward,numOWeights,numOBiases,actiFunc);
+                    adjustWeights(otherPlayer,otherTurnHistory,otherChoiceHistory,-reward,numOWeights,numOBiases,actiFunc);
                 }
             }
             
         }
         if (cb.checkMate(0)){
             System.out.println("white wins!");
-            adjustWeights(nnet1,nnet1TurnHistory,nnet1ChoiceHistory,50,actiFunc);
-            adjustWeights(nnet2,nnet2TurnHistory,nnet2ChoiceHistory,-50,actiFunc);
+            adjustWeights(nnet1,nnet1TurnHistory,nnet1ChoiceHistory,50,numOWeights,numOBiases,actiFunc);
+            adjustWeights(nnet2,nnet2TurnHistory,nnet2ChoiceHistory,-50,numOWeights,numOBiases,actiFunc);
         }else if (cb.checkMate(1)){
             System.out.println("black wins!");
-            adjustWeights(nnet2,nnet2TurnHistory,nnet2ChoiceHistory,50,actiFunc);
-            adjustWeights(nnet1,nnet1TurnHistory,nnet1ChoiceHistory,-50,actiFunc);
+            adjustWeights(nnet2,nnet2TurnHistory,nnet2ChoiceHistory,50,numOWeights,numOBiases,actiFunc);
+            adjustWeights(nnet1,nnet1TurnHistory,nnet1ChoiceHistory,-50,numOWeights,numOBiases,actiFunc);
         }
         
     }
@@ -146,15 +170,17 @@ public class ChessBotTrainer {
         double sum = 0;
         double rand = Math.random();
         
+        double[] temp = output.clone();
+        
         for (int i = 0; i < output.length; i++) {
-            sum += output[i];
+            sum += temp[i];
         }
         for (int i = 0; i < output.length; i++) {
-            output[i] /= sum; 
+            temp[i] /= sum; 
         }
         
         for (int i = 0; i < output.length; i++) {
-            rand -= output[i];
+            rand -= temp[i];
             if (rand < 0){
                 return i;
             }
@@ -170,14 +196,14 @@ public class ChessBotTrainer {
     }
     
     public static void adjustWeights(Network nnet, ArrayList<Vector[]> turnHistory, ArrayList<Integer> choiceHistory,
-            int reward, Function actiFunc){
+            double reward,int numOWeights,int numOBiases, Function actiFunc){
         
         for (int i = 0; i < choiceHistory.size(); i++) {
             Vector[] turn = turnHistory.get(i);
             int choice = choiceHistory.get(i);
             turn[1].setValue(choice, turn[1].getValue(choice) * (1 + reward/100));
             nnet.setInput(turn[0]);
-            nnet.batchGradientDiscent(turn[1],quadraticCurveMaxOne(i,choiceHistory.size()), actiFunc);
+            nnet.partialGradientDiscent(turn[1],quadraticCurveMaxOne(i,choiceHistory.size()),numOWeights,numOBiases, actiFunc);
         }
         
     }

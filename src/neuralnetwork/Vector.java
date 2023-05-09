@@ -30,10 +30,12 @@ public class Vector {
         this.contents = contents;
         dimension = contents.length;
     }
-    public void setValue(int index,double value){
+
+    public void setValue(int index, double value) {
         contents[index] = value;
     }
-    public double getValue(int index){
+
+    public double getValue(int index) {
         return contents[index];
     }
 
@@ -67,47 +69,47 @@ public class Vector {
 
         return result;
     }
-    
-    public static double magnitude(Vector vector){
+
+    public static double magnitude(Vector vector) {
 
         double squaresum = 0;
-        
-        for(double num : vector.getContents()){
-            squaresum += num*num;
+
+        for (double num : vector.getContents()) {
+            squaresum += num * num;
         }
-        
+
         return Math.sqrt(squaresum);
-        
+
     }
-    
-    public double magnitude(){
+
+    public double magnitude() {
 
         double squaresum = 0;
-        
-        for(double num : contents){
-            squaresum += num*num;
+
+        for (double num : contents) {
+            squaresum += num * num;
         }
-        
+
         return Math.sqrt(squaresum);
-        
+
     }
 
-    public void add(Vector vector){
-        
+    public void add(Vector vector) {
+
         double[] vectorContents = vector.getContents();
-        
+
         if (dimension != vector.getDimension()) {
             throw new VectorDimensionsDoNotMatchException();
         }
-        
+
         for (int i = 0; i < dimension; i++) {
             contents[i] += vectorContents[i];
         }
-        
+
     }
-    
-    public static Vector add(Vector vector1, Vector vector2){
-        
+
+    public static Vector add(Vector vector1, Vector vector2) {
+
         double[] vector1Contents = vector1.getContents();
         double[] vector2Contents = vector2.getContents();
         double[] result = new double[vector1.getDimension()];
@@ -115,31 +117,31 @@ public class Vector {
         if (vector1.getDimension() != vector2.getDimension()) {
             throw new VectorDimensionsDoNotMatchException();
         }
-        
+
         for (int i = 0; i < vector1.getDimension(); i++) {
             result[i] = vector1Contents[i] + vector2Contents[i];
         }
-        
+
         return new Vector(result);
-        
+
     }
-    
-    public void subtract(Vector vector){
-        
+
+    public void subtract(Vector vector) {
+
         double[] vectorContents = vector.getContents();
-        
+
         if (dimension != vector.getDimension()) {
             throw new VectorDimensionsDoNotMatchException();
         }
-        
+
         for (int i = 0; i < dimension; i++) {
             contents[i] -= vectorContents[i];
         }
-        
+
     }
-    
-    public static Vector subtract(Vector vector1, Vector vector2){
-        
+
+    public static Vector subtract(Vector vector1, Vector vector2) {
+
         double[] vector1Contents = vector1.getContents();
         double[] vector2Contents = vector2.getContents();
         double[] result = new double[vector1.getDimension()];
@@ -147,25 +149,27 @@ public class Vector {
         if (vector1.getDimension() != vector2.getDimension()) {
             throw new VectorDimensionsDoNotMatchException();
         }
-        
+
         for (int i = 0; i < vector1.getDimension(); i++) {
-            result[i] = vector1Contents[i] - vector2Contents[i];
+            if (vector1Contents[i] - vector2Contents[i] != 0) {
+                result[i] = vector1Contents[i] - vector2Contents[i];
+            }
         }
-        
+
         return new Vector(result);
-        
+
     }
-    
-    public String toString(){
+
+    public String toString() {
         String str = "[";
-        
-        for (double num : contents){
+
+        for (double num : contents) {
             str += num + ",";
         }
-        
+
         str += "]";
-        
+
         return str;
     }
-    
+
 }
