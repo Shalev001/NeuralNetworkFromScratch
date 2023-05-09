@@ -41,7 +41,7 @@ public class NeuralNetwork {
                     net.compute(actiFunc);
                     //System.out.println("loss function: "+Network.lossFunk(new Vector(net.getOutput()), expectedOutputs[i]));
                     //System.out.println(Arrays.toString(net.getOutput()) + " : " + expectedOutputs[i].toString());
-                    net.batchGradientDiscent(expectedOutputs[i],actiFunc);
+                    net.batchGradientDiscent(expectedOutputs[i],1,actiFunc);
                 }
             }
         }

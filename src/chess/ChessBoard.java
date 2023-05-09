@@ -282,76 +282,87 @@ public class ChessBoard {
     public ArrayList<Piece> getBlack() {
         return black;
     }
-    
+
     /**
-     * a method to take the current board state and convert it into input for a neural network.
-     * follows the format outlined in the design document
+     * a method to take the current board state and convert it into input for a
+     * neural network. follows the format outlined in the design document
+     *
      * @param colour
-     * @return 
+     * @return
      */
-    public Vector toNNetInput(int colour){
-        
+    public Vector toNNetInput(int colour) {
+
         double[] output = new double[65];//every piece on the board plus an entry for the colour
-        
-        for (double entry : output){
+
+        for (double entry : output) {
             entry = 0;
         }
-        
-        output[65] = colour; //the last entry is the colour;
-        
-        for(Piece piece : white){
+
+        output[64] = colour; //the last entry is the colour;
+
+        for (Piece piece : white) {
             //             xLocation              +          yLocation * 8    adding one since the first index should be the colour
-            output[(piece.getPieceLocation()[0]-1 + (piece.getPieceLocation()[1]-1)* 8)] = piece.getPieceNum()+1;//entering the piece code for the specific piece
+            output[(piece.getPieceLocation()[0] - 1 + (piece.getPieceLocation()[1] - 1) * 8)] = piece.getPieceNum() + 1;//entering the piece code for the specific piece
         }
-        for(Piece piece : black){
-            output[(piece.getPieceLocation()[0]-1 + (piece.getPieceLocation()[1]-1)* 8)] = piece.getPieceNum()+7;
+        for (Piece piece : black) {
+            output[(piece.getPieceLocation()[0] - 1 + (piece.getPieceLocation()[1] - 1) * 8)] = piece.getPieceNum() + 7;
         }
-        
+
         return new Vector(output);
     }
     
+    /**
+     * a method to convert an integer indexing a 4 dimensional space with 8 entries per dimension into coordinates
+     * the first two dimensions are the original x/y and the second two are the new x/y
+     * @param index
+     * @return coordinates in the format: x1, y1, x2, y2
+     */
     public static int[] indexToCoordinates(int index){
         
-        int[] output = new int[2];
+        int[] output = new int[4];
         
-        output[0] = (index % 8)+1;
+        output[1] = index / 512;
         
-        output[1] = (index / 8)+1;
+        output[0] = (index % 512) / 64;
+        
+        output[3] = ((index % 512) % 64) / 8;
+        
+        output[2] = ((index % 512) % 64) % 8;
         
         return output;
     }
-    
-    public int getEnemyPointTotal(){
-        
+
+    public int getEnemyPointTotal() {
+
         int sum = 0;
-        
-        if (turn == 0){
-            for(Piece piece : white){
+
+        if (turn == 0) {
+            for (Piece piece : white) {
                 sum += piece.getPieceValue();
             }
-        }else{
-            for(Piece piece : black){
+        } else {
+            for (Piece piece : black) {
                 sum += piece.getPieceValue();
             }
         }
-        
+
         return sum;
     }
-    
-    public int getAlliedPointTotal(){
-        
+
+    public int getAlliedPointTotal() {
+
         int sum = 0;
-        
-        if (turn == 0){
-            for(Piece piece : black){
+
+        if (turn == 0) {
+            for (Piece piece : black) {
                 sum += piece.getPieceValue();
             }
-        }else{
-            for(Piece piece : white){
+        } else {
+            for (Piece piece : white) {
                 sum += piece.getPieceValue();
             }
         }
-        
+
         return sum;
     }
 

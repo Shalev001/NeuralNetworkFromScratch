@@ -33,6 +33,9 @@ public class Vector {
     public void setValue(int index,double value){
         contents[index] = value;
     }
+    public double getValue(int index){
+        return contents[index];
+    }
 
     public double dotProduct(Vector vector) throws VectorDimensionsDoNotMatchException {
 
