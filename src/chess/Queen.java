@@ -109,7 +109,7 @@ public class Queen extends Piece {
             if (xdiff > 1) {
 
                 for (int i = xdiff - 1; i > 0; i--) {
-                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1
+                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, enemyPieces) != -1
                             || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
                         return false;
                     }
@@ -118,8 +118,8 @@ public class Queen extends Piece {
             } else if (xdiff < -1) {
 
                 for (int i = xdiff + 1; i < 0; i++) {
-                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)), enemyPieces) != -1
-                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * i, alliedPieces)) {
+                    if (enemyPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * -i, enemyPieces) != -1
+                            || alliedPieceThere(xLoc - i, yLoc - (ydiff / Math.abs(ydiff)) * -i, alliedPieces)) {
                         return false;
                     }
                 }
@@ -130,6 +130,7 @@ public class Queen extends Piece {
         }
 
         return false;
+        
     }
 
     private boolean rookMove(int xLoc, int yLoc, ArrayList<Piece> enemyPieces, ArrayList<Piece> alliedPieces) {
